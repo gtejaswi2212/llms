@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC Travel Guide Chatbot - Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NYC Travel Guide Chatbot</h1>
+            <p>Your personal assistant for exploring New York City</p>
+        </header>
+        
+        <main>
+            <div class="chat-container results-page">
+                <div class="chat-history">
+                    <div class="user-message">
+                        <div class="avatar user-avatar">
+                            <span>You</span>
+                        </div>
+                        <div class="message-content">
+                            <p>{{ query }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bot-message">
+                        <div class="avatar bot-avatar">
+                            <span>NYC</span>
+                        </div>
+                        <div class="message-content">
+                            <p>{{ result | safe }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form action="/" method="post" class="query-form">
+                    <div class="input-container">
+                        <input type="text" name="query" id="query" placeholder="Ask another question..." required>
+                        <button type="submit">Ask</button>
+                    </div>
+                </form>
+                
+                <div class="back-link">
+                    <a href="/">← Back to home</a>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>© 2025 NYC Travel Guide Chatbot | Powered by AI</p>
+        </footer>
+    </div>
+</body>
+</html>

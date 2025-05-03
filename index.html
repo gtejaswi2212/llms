@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🗽 NYC Travel Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        <span class="statue-icon" aria-hidden="true">
+          <!-- your SVG -->
+          <svg viewBox="0 0 64 64" width="24" height="24" fill="currentColor">…</svg>
+        </span>
+        TravelWise
+      </h1>
+      <p>Chat freely and our AI will craft the perfect itinerary for you.</p>
+      <!-- add this right before your closing </head> -->
+      <script 
+        src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+      </script>
+
+    </header>
+
+    <div class="chat-container">
+      <div id="chat-window"></div>
+
+      <form id="chat-form">
+        <input
+          type="text"
+          id="chat-input"
+          placeholder="🗽 I’m looking for..."
+          autocomplete="off"
+          required
+        />
+        <button type="submit">Send</button>
+      </form>
+
+      <div class="suggestions">
+        <button onclick="sendQuery('Top museums in NYC')">Top museums in NYC</button>
+        <button onclick="sendQuery('Best pizza spots in NYC')">Best pizza spots in NYC</button>
+        <button onclick="sendQuery('3-day NYC itinerary')">3-day NYC itinerary</button>
+        <button onclick="sendQuery('Central Park walking tours')">Central Park walking tours</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatWindow = document.getElementById('chat-window');
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const query = chatInput.value.trim();
+      if (!query) return;
+      appendMessage('user', query);
+      chatInput.value = '';
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+        const data = await res.json();
+        if (data.error) {
+          appendMessage('bot', `Error: ${data.error}`);
+        } else {
+          appendMessage('bot', data.result);
+        }
+      } catch (err) {
+        appendMessage('bot', 'Network error. Please try again.');
+      }
+    });
+    function appendMessage(who, text) {
+    const msg = document.createElement('div');
+    msg.classList.add('message', who);
+
+    if (who === 'bot') {
+        // interpret the bot’s reply as Markdown
+        msg.innerHTML = marked.parse(text);
+    } else {
+        msg.textContent = text;
+    }
+
+    chatWindow.appendChild(msg);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+
+
+    function sendQuery(text) {
+      chatInput.value = text;
+      chatForm.dispatchEvent(new Event('submit'));
+    }
+  </script>
+</body>
+</html>
